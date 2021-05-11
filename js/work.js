@@ -9,6 +9,7 @@ const newStringEl = defaultEl.reduce((acc, { preview, description, original }) =
   <a class="gallery__link" href="${original}" >
   <img loading="lazy" class="gallery__image"
   src="${preview}"
+  data-source="${original}"
   alt="${description}"/>
   </a>
   </li>`);
@@ -21,39 +22,36 @@ ulRef.addEventListener('click', e);
 
     
 
-let element;
+const lightboxImage = document.querySelector('.lightbox__image');
+
 function e(eve) {
-  eve.preventDefault();
-  if (eve.target.className !== imgEl.className) {
+  if(!eve.target.classList.contains('gallery__image')) {
     return;
   }
-  const bigImgEl = eve.target.alt;
-  for (let i = 0; i < defaultEl.length; i++) {
-    if (defaultEl[i].description === bigImgEl) {
-      element = defaultEl[i].original;
-    }
+  eve.preventDefault();
+// window.addEventListener('keydown', onEscKeyPress);
+// window.addEventListener('keydown', onArrowKeyPress);
+divEl.classList.add('is-open');
+getImageAttr(eve.target.dataset.source, eve.target.alt); 
+console.log(eve.target.dataset.source, eve.target.alt);   
   }
 
-  divEl.classList.add('is-open');
-  divModalEl.innerHTML = `<img class="lightbox__image"
-    src="${element}"
-    alt="${bigImgEl}"
-  />`;
-  
-}
+function getImageAttr (src, alt) {
+  lightboxImage.src = src;
+  lightboxImage.alt = alt;
+ }
 
 
-btnEl.addEventListener('click', () => {
-  divEl.classList.remove('is-open');
-});
+// btnEl.addEventListener('click', () => {
+//   divEl.classList.remove('is-open');
+// });
 
 // Очистка пути после закрытия модалки//
 
 function isOpen() {
-  const divCloseModal = document.querySelector('.lightbox__image');
+  // const divCloseModal = document.querySelector('.lightbox__image');
   divEl.classList.remove('is-open');
-  divCloseModal.alt = '';
-  divCloseModal.src = '';
+  getImageAttr('', '');
 }
 const closeModalEl = document.querySelector('[data-action="close-lightbox"]');
 closeModalEl.addEventListener('click', isOpen);
